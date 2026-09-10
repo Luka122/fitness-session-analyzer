@@ -6,8 +6,9 @@ def check_validity(observation): # Assumptions in README.md
         if key not in observation:
             return False
 
-    if observation["heart_rate"] < 30 or observation["heart_rate"] > 220:
-        return False
+    for key in required:
+        if observation[key] is None:
+            return False
 
     if observation["heart_rate"] < 30 or observation["heart_rate"] > 220:
         return False
