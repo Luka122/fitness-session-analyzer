@@ -25,3 +25,18 @@ def check_validity(observation): # Assumptions in README.md
         return False
 
     return True
+
+def calculate_average(values):
+    if values:
+        return sum(values) / len(values)
+    else:
+        return False
+
+def calculate_min_max(values):
+    if values:
+        return min(values), max(values)
+    else:
+        return False
+
+def compare_to_baseline(baseline_heart_rate, session_heart_rate):
+        return session_heart_rate - baseline_heart_rate
