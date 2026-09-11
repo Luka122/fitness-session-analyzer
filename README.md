@@ -52,7 +52,8 @@ Clone the repository and run the program from the repository root:
 
 git clone https://github.com/Luka122/fitness-session-analyzer.git
 
-cd fitness-session-analyzer
+cd fitness-session-analyzer (root)
+
 python main.py
 
 The project uses only the Python standard library.
