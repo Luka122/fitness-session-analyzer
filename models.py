@@ -85,7 +85,10 @@ class FitnessAnalyzer:
         first_observation = self._valid_observations[0]
         last_observation = self._valid_observations[-1]
 
-        if last_observation.heart_rate <= first_observation.heart_rate * 0.9:
+        heart_rate_declined = last_observation.heart_rate <= first_observation.heart_rate * 0.9
+        activity_declined = last_observation.activity_level < first_observation.activity_level
+
+        if heart_rate_declined and activity_declined:
             return "recovering"
 
         return self.classify_activity_level(activity_level_average)
