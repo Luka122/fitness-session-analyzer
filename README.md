@@ -63,20 +63,21 @@ The project uses only the Python standard library.
 Formatted for readability
 ```text
 Summary:
-  Heart rate average:       106.25 bpm
-  Heart rate min/max:       74 / 134 bpm
-  Skin response average:    2.03
-  Skin response min/max:    1.81 / 2.33
-  Temperature average:      32.81 °C
-  Temperature min/max:      32.64 / 33.05 °C
-  Activity level average:   0.465
-  Activity level min/max:   0.17 / 0.81
-  Signal quality average:   0.91
-  Signal quality min/max:   0.86 / 0.98
-  Session average HR:       106.25 bpm
-  Baseline HR difference:   +36.25 bpm
-
-Classification: recovering
+  Heart rate average:       98.50 bpm
+  Heart rate min/max:       (68, 127)
+  Skin response average:    2.70
+  Skin response min/max:    (2.47, 2.92)
+  Temperature average:      32.86 °C
+  Temperature min/max:      (32.64, 33.03)
+  Activity level average:   0.468
+  Activity level min/max:   (0.11, 0.9)
+  Signal quality average:   0.92
+  Signal quality min/max:   (0.85, 0.97)
+  Session average HR:       98.50 bpm
+  Baseline HR difference:   35.50 bpm
+  Baseline skin difference: 0.37
+  Baseline temp difference: 0.29 °C
+  Usable observations:      12/12
 ```
 ### known limitations
 The classification rules are manually defined, and recovery detection compares the first and last valid heart rate and activity measurements.

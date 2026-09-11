@@ -44,6 +44,25 @@ class FitnessAnalyzer:
             return "high activity"
 
     def calculate_summary(self):
+        if not self._valid_observations:
+            return {
+                "heart_rate_average": None,
+                "heart_rate_min_max": None,
+                "skin_response_average": None,
+                "skin_response_min_max": None,
+                "temperature_average": None,
+                "temperature_min_max": None,
+                "activity_level_average": None,
+                "activity_level_min_max": None,
+                "signal_quality_average": None,
+                "signal_quality_min_max": None,
+                "session_avg_heart_rate": None,
+                "base_session_comparison": None,
+                "skin_response_comparison": None,
+                "temperature_comparison": None,
+                "usable_observations": 0,
+            }
+
         heart_rates = []
         skin_responses = []
         temperatures = []
@@ -58,14 +77,19 @@ class FitnessAnalyzer:
             signal_qualities.append(observation.signal_quality)
 
         session_avg_heart_rate = calculate_average(heart_rates)
+        session_avg_skin_response = calculate_average(skin_responses)
+        session_avg_temperature = calculate_average(temperatures)
+
         base_session_comparison = compare_to_baseline(self.session.participant.baseline_heart_rate, session_avg_heart_rate)
+        skin_response_comparison = compare_to_baseline(self.session.participant.baseline_skin_response, session_avg_skin_response)
+        temperature_comparison = compare_to_baseline(self.session.participant.baseline_temperature, session_avg_temperature)
 
         return {
-            "heart_rate_average": calculate_average(heart_rates),
+            "heart_rate_average": session_avg_heart_rate,
             "heart_rate_min_max": calculate_min_max(heart_rates),
-            "skin_response_average": calculate_average(skin_responses),
+            "skin_response_average": session_avg_skin_response,
             "skin_response_min_max": calculate_min_max(skin_responses),
-            "temperature_average": calculate_average(temperatures),
+            "temperature_average": session_avg_temperature,
             "temperature_min_max": calculate_min_max(temperatures),
             "activity_level_average": calculate_average(activity_levels),
             "activity_level_min_max": calculate_min_max(activity_levels),
@@ -73,7 +97,10 @@ class FitnessAnalyzer:
             "signal_quality_min_max": calculate_min_max(signal_qualities),
             "session_avg_heart_rate": session_avg_heart_rate,
             "base_session_comparison": base_session_comparison,
-            }
+            "skin_response_comparison": skin_response_comparison,
+            "temperature_comparison": temperature_comparison,
+            "usable_observations": len(self._valid_observations),
+        }
 
     def classify(self):
         if len(self._valid_observations) < 3:
