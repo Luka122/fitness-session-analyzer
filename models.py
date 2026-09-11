@@ -17,9 +17,9 @@ class Observation:
         self.signal_quality = signal_quality
 
 class FitnessSession:
-    def __init__(self, participant, observation):
+    def __init__(self, participant, observations):
         self.participant = participant
-        self.observation = observation
+        self.observations = observations
 
 class FitnessAnalyzer:
     def __init__(self, session):
