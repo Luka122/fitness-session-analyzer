@@ -24,11 +24,24 @@ class FitnessSession:
 class FitnessAnalyzer:
     def __init__(self, session):
         self.session = session
-        self.valid_observations = []
+        self._valid_observations = []
 
         for observation in session.observations:
             if check_validity(observation):
-                self.valid_observations.append(observation)
+                self._valid_observations.append(observation)
+
+    @property
+    def valid_observations(self):
+        return self._valid_observations
+
+    @staticmethod
+    def classify_activity_level(activity_level_average):
+        if activity_level_average <= 0.25:
+            return "resting"
+        elif activity_level_average <= 0.65:
+            return "moderate activity"
+        else:
+            return "high activity"
 
     def calculate_summary(self):
         heart_rates = []
@@ -37,7 +50,7 @@ class FitnessAnalyzer:
         activity_levels = []
         signal_qualities = []
 
-        for observation in self.valid_observations:
+        for observation in self._valid_observations:
             heart_rates.append(observation.heart_rate)
             skin_responses.append(observation.skin_response)
             temperatures.append(observation.temperature)
@@ -63,21 +76,16 @@ class FitnessAnalyzer:
             }
 
     def classify(self):
-        if len(self.valid_observations) < 3:
+        if len(self._valid_observations) < 3:
             return "insufficient_data"
 
         summary = self.calculate_summary()
         activity_level_average = summary["activity_level_average"]
 
-        first_observation = self.valid_observations[0]
-        last_observation = self.valid_observations[-1]
+        first_observation = self._valid_observations[0]
+        last_observation = self._valid_observations[-1]
 
         if last_observation.heart_rate <= first_observation.heart_rate * 0.9:
             return "recovering"
 
-        if activity_level_average <= 0.25:
-            return "resting"
-        elif activity_level_average <= 0.65:
-            return "moderate activity"
-        else:
-            return "high activity"
+        return self.classify_activity_level(activity_level_average)
