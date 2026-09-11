@@ -30,29 +30,54 @@ class FitnessAnalyzer:
             if check_validity(observation):
                 self.valid_observations.append(observation)
 
-        def calculate_summary(self):
-            heart_rates = []
-            skin_responses = []
-            temperatures = []
-            activity_levels = []
-            signal_qualities = []
+    def calculate_summary(self):
+        heart_rates = []
+        skin_responses = []
+        temperatures = []
+        activity_levels = []
+        signal_qualities = []
 
-            for observation in self.valid_observations:
-                heart_rates.append(observation.heart_rate)
-                skin_responses.append(observation.skin_response)
-                temperatures.append(observation.temperature)
-                activity_levels.append(observation.activity_level)
-                signal_qualities.append(observation.signal_quality)
+        for observation in self.valid_observations:
+            heart_rates.append(observation.heart_rate)
+            skin_responses.append(observation.skin_response)
+            temperatures.append(observation.temperature)
+            activity_levels.append(observation.activity_level)
+            signal_qualities.append(observation.signal_quality)
 
-            return {
-                "heart_rate_average": calculate_average(heart_rates),
-                "heart_rate_min_max": calculate_min_max(heart_rates),
-                "skin_response_average": calculate_average(skin_responses),
-                "skin_response_min_max": calculate_min_max(skin_responses),
-                "temperature_average": calculate_average(temperatures),
-                "temperature_min_max": calculate_min_max(temperatures),
-                "activity_level_average": calculate_average(activity_levels),
-                "activity_level_min_max": calculate_min_max(activity_levels),
-                "signal_quality_average": calculate_average(signal_qualities),
-                "signal_quality_min_max": calculate_min_max(signal_qualities),
+        session_avg_heart_rate = calculate_average(heart_rates)
+        base_session_comparison = compare_to_baseline(self.session.participant.baseline_heart_rate, session_avg_heart_rate)
+
+        return {
+            "heart_rate_average": calculate_average(heart_rates),
+            "heart_rate_min_max": calculate_min_max(heart_rates),
+            "skin_response_average": calculate_average(skin_responses),
+            "skin_response_min_max": calculate_min_max(skin_responses),
+            "temperature_average": calculate_average(temperatures),
+            "temperature_min_max": calculate_min_max(temperatures),
+            "activity_level_average": calculate_average(activity_levels),
+            "activity_level_min_max": calculate_min_max(activity_levels),
+            "signal_quality_average": calculate_average(signal_qualities),
+            "signal_quality_min_max": calculate_min_max(signal_qualities),
+            "session_avg_heart_rate": session_avg_heart_rate,
+            "base_session_comparison": base_session_comparison,
             }
+
+    def classify(self):
+        if len(self.valid_observations) < 3:
+            return "insufficient_data"
+
+        summary = self.calculate_summary()
+        activity_level_average = summary["activity_level_average"]
+
+        first_observation = self.valid_observations[0]
+        last_observation = self.valid_observations[-1]
+
+        if last_observation.heart_rate <= first_observation.heart_rate * 0.9:
+            return "recovering"
+
+        if activity_level_average <= 0.25:
+            return "resting"
+        elif activity_level_average <= 0.65:
+            return "moderate activity"
+        else:
+            return "high activity"
